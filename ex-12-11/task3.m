@@ -1,7 +1,9 @@
 clc;
 clear all;
 
-addpath(genpathKPM('./bnt'));
+cd bnt;
+addpath(genpathKPM(pwd));
+cd ..;
 
 % Matrix
 N = 5;
@@ -36,15 +38,33 @@ bnet.CPD{S} = tabular_CPD(bnet, S, 'CPT', [0.95     0.2 ...
                                        
 bnet.CPD{L} = tabular_CPD(bnet, L, 'CPT', [0.1      0.4     0.99 ...
                                            0.9      0.6     0.01]);
+                                       
+% Generate samples
+nsamples = 100;
+samples = cell(N, nsamples);
+for i=1:nsamples
+  samples(:,i) = sample_bnet(bnet);
+end
 
-% Inference
-engine = jtree_inf_engine(bnet);
-evidence = cell(1, N);
+% Make a tabula rasa
+bnet2 = mk_bnet(dag, node_sizes);
+seed = 0;
+rand('state', seed);
+bnet2.CPD{D} = tabular_CPD(bnet2, D);
+bnet2.CPD{I} = tabular_CPD(bnet2, I);
+bnet2.CPD{G} = tabular_CPD(bnet2, G);
+bnet2.CPD{S} = tabular_CPD(bnet2, S);
+bnet2.CPD{L} = tabular_CPD(bnet2, L);
 
-[engine, loglik] = enter_evidence(engine, evidence);
-m = marginal_nodes(engine, [D I G S L]);
+% Learn
+bnet3 = learn_params(bnet2, samples);
 
-m.T
+CPT3 = cell(1,N);
+for i=1:N
+  s=struct(bnet3.CPD{i});  % violate object privacy
+  CPT3{i}=s.CPT;
+end
 
-
-
+dispcpt(CPT3{I})
+disp(' ');
+dispcpt(CPT3{G})
