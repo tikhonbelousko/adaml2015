@@ -38,13 +38,13 @@ bnet.CPD{L} = tabular_CPD(bnet, L, 'CPT', [0.1      0.4     0.99 ...
                                            0.9      0.6     0.01]);
 
 % Inference
-engine = jtree_inf_engine(bnet);
+engine = global_joint_inf_engine(bnet);
 evidence = cell(1, N);
 
 [engine, loglik] = enter_evidence(engine, evidence);
 m = marginal_nodes(engine, [D I G S L]);
 
-m.T
+m.T(1,1,1,1,1)
 
 
 
