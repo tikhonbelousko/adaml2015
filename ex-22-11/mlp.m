@@ -12,14 +12,14 @@ d=size(traindata,1);
 % Amount of classes
 classes=max(trainclass);
 
-% Maximum count of iterations
-maxepochs=100000;
+% Maximm count of iterations
+maxepochs=1000000;
 
 % Init sums of squared errors array
 J=zeros(1,maxepochs);
 
 % Learning rate
-rho=0.0001;
+rho=0.001;
 
 % Number of hidden layer neurons
 hidden=3; 
@@ -54,7 +54,8 @@ while 1
   vhidden=whidden'*extendedinput;
   
   % Pass values through step-function
-  yhidden=tanh(vhidden);
+  z = zeros(size(vhidden));
+  yhidden=max(z, vhidden);
   yhidden=[yhidden;ones(1,N)];
   
   
@@ -66,7 +67,7 @@ while 1
   J(t)=0.5*sum(sum((youtput-trainoutput).^2));
   
   % Draw each 100 steps
-  if (mod(t,100000)==0)
+  if (mod(t,10000)==0)
     semilogy(1:t,J(1:t));
     t
     drawnow;
@@ -97,7 +98,10 @@ while 1
   deltaoutput=(youtput-trainoutput);
    
   % Update delta for hidden layer
-  deltahidden=(woutput(1:end-1,:)*deltaoutput).*(1-yhidden(1:end-1,:).^2);
+  %deltahidden=(woutput(1:end-1,:)*deltaoutput).*(1-yhidden(1:end-1,:).^2);
+  yhd = yhidden;
+  yhd(yhidden > 0.00001) = 1; % Derivative
+  deltahidden=(woutput(1:end-1,:)*deltaoutput).*(yhd(1:end-1,:));
   
   % Update delta for weights hidden
   deltawhidden=-rho*extendedinput*deltahidden';
