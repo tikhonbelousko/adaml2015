@@ -14,3 +14,6 @@
 
 # Simulink Code Generation
 slprj/
+
+# Data
+*.nc

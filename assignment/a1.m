@@ -1,0 +1,4 @@
+clc;
+clearvars;
+close all;
+
