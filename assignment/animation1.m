@@ -1,20 +1,21 @@
 %%%
-% The effect of first-N
+% The effect of the first N
 % principle components is demonstrated
-% in this file. Run it to see this 
-% animation. Fot that perpose the first level
+% in this file. Run it to see this
+% animation. For animation only first level
 % is utilized.
 %%%
 
 clc;
 clearvars;
+close all;
 tic();
 
 % Load data
 load('air.mon.level1.mat');
 n = size(time, 1); % # of timestemps
 d = lonsz * latsz; % # of grid points
-k = floor(d * 0.05); 
+k = floor(d * 0.05);
 
 % Flatten data
 X = reshape(data, d, n)';
@@ -46,7 +47,7 @@ for i=1:n
     for j=1:N
         d = IMAGES{j};
         subplot(2,3,j);
-        image(d(:,:,i)','CDataMapping','scaled'); 
+        image(d(:,:,i)','CDataMapping','scaled');
         title(TITLES{j});
     end
     pause(0.04);

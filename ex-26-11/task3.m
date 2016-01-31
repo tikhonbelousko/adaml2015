@@ -27,8 +27,8 @@ X = zeros(n, d);
 
 for i1=1:lon_size
     for i2=1:lat_size
-        for j=1:k
-            X(j, (i1-1) * lat_size + i2) = data(i1,i2,n);
+        for j=1:n
+            X(j, (i1-1) * lat_size + i2) = data(i1,i2,j);
         end
     end
 end
