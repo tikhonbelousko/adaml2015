@@ -24,28 +24,49 @@ Xc = X - Xm;
 toc();
 
 
-% Draw spectrums of first N components
+% Draw first N components
 N = 3;
-del = [140 146; 283 286; 142 148];
-
+del = [140 146; 283 286; 138 148];
+figure(1);
 for i=1:N
     
     % FFT
     sfft = fft(s(:,i));
     sfft(del(i,1):del(i,2)) = 0;
-    sfft(n-del(i,1):n-del(i,2)) = 0;
+    sfft(n-del(i,2):n-del(i,1)) = 0;
 
     subplot(3,N,1+N*(i-1));
     plot(s(:,i));
-    title(sprintf('Component %d: spectrum',i));
+    title(sprintf('Component %d',i));
 
     subplot(3,N,2+N*(i-1));
     plot(ifft(sfft, 'symmetric'));
-    title(sprintf('Component %d: spectrum (remove peak)',i));
+    title(sprintf('Component %d (Peak filter)',i));
 
     subplot(3,N,3+N*(i-1));
     plot(imgaussfilt(ifft(sfft, 'symmetric'), 50));
-    title(sprintf('Component %d: spectrum (remove peak + gaussian)',i));
+    title(sprintf('Component %d (Peak + Gaussian filter)',i));
     
 end
 
+% Draw spectra
+figure(2);
+for i=1:N
+    % FFT
+    sfft = fft(s(:,i));
+
+    subplot(3,N,1+N*(i-1));
+    plot(abs(sfft));
+    title(sprintf('Component %d: Spectrum',i));
+    
+    sfft(del(i,1):del(i,2)) = 0;
+    sfft(n-del(i,2):n-del(i,1)) = 0;
+    
+    subplot(3,N,2+N*(i-1));
+    plot(abs(sfft));
+    title(sprintf('Component %d: Spectrum (Peak filter)',i));
+
+    subplot(3,N,3+N*(i-1));
+    plot(abs(fft(imgaussfilt(ifft(sfft, 'symmetric'), 50))));
+    title(sprintf('Component %d: Spectrum (Peak + Gaussian filter)',i));
+end
